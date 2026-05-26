@@ -36,7 +36,7 @@ export default function BerandaHerbal({ herbalList, onAddClick }) {
             {/* Recent Herbals */}
             <div className="recent-section">
                 <h3 className="section-title">Herbal Terbaru</h3>
-                {herbalList && herbalList.length === 0 ? (
+                {!herbalList || herbalList.length === 0 ? (
                     <div className="empty-state">
                         <Leaf size={48} color="#c8e6c9" />
                         <p>Belum ada data herbal. Mulai tambahkan herbal baru!</p>
