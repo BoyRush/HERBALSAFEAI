@@ -648,8 +648,21 @@ def patient_stats():
         if not p_prof: 
             return jsonify({"error": "Profil tidak ada"}), 404
 
-        db_cursor.execute("SELECT recommendation_count FROM users WHERE id = %s", (active_session['id'],))
+        db_cursor.execute("SELECT created_at FROM users WHERE id = %s", (active_session['id'],))
         usr_details = db_cursor.fetchone()
+        
+        return jsonify({
+            "status": "success",
+            "data": {
+                "id": active_session.get('id'),
+                "username": active_session.get('username'),
+                "fullName": active_session.get('full_name'),
+                "role": active_session.get('role'),
+                "status": active_session.get('verification_status'),
+                "memberSince": usr_details['created_at'].isoformat() if usr_details and usr_details.get('created_at') else None
+            }
+        }), 200
+
         db_cursor.execute("SELECT COUNT(*) as count FROM medical_records WHERE patient_id = %s", (p_prof['id'],))
         rm_count = db_cursor.fetchone()['count']
         db_cursor.execute("SELECT COUNT(*) as count FROM access_permissions WHERE patient_id = %s AND status = 'approved'", (p_prof['id'],))
@@ -660,7 +673,6 @@ def patient_stats():
         db_cursor.close()
         db_conn.close()
         return jsonify({
-            "recommendations": usr_details['recommendation_count'],
             "medical_records": rm_count,
             "authorized_doctors": approved_docs,
             "pending_requests": pend_reqs
@@ -882,11 +894,10 @@ def create_new_account():
                 attachment = path_dest
         
         init_status = 'pending' if req_role in ['doctor', 'herbal_doctor'] else 'approved'
-        ref_id = ''.join(secrets.choice(string.ascii_uppercase + string.digits) for _ in range(8)) if req_role == 'patient' else None
-
+        
         db_cursor.execute(
-            "INSERT INTO users (username, email, password_hash, full_name, role, document_url, verification_status, referral_code) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", 
-            (req_uname, req_email, secured_pw, req_name, req_role, attachment, init_status, ref_id)
+            "INSERT INTO users (username, email, password_hash, full_name, role, document_url, verification_status) VALUES (%s, %s, %s, %s, %s, %s, %s)", 
+            (req_uname, req_email, secured_pw, req_name, req_role, attachment, init_status)
         )
         created_id = db_cursor.lastrowid
 
@@ -970,10 +981,10 @@ def verify_identity():
     try:
         db_conn = acquire_mysql_connection()
         db_cursor = db_conn.cursor(dictionary=True)
-        db_cursor.execute("SELECT id, username, email, full_name, role, verification_status, recommendation_count FROM users WHERE id = %s", (uid,))
-        profile = db_cursor.fetchone()
+        db_cursor.execute("SELECT id, username, email, full_name, role, verification_status FROM users WHERE id = %s", (uid,))
+        user_data = db_cursor.fetchone()
         
-        if not profile: 
+        if not user_data: 
             return jsonify({"error": "Tidak ditemukan"}), 404
             
         if u_role == 'patient':
