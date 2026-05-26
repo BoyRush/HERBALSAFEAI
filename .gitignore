@@ -216,3 +216,47 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# ======================
+# NEXTJS
+# ======================
+frontend/node_modules/
+frontend/.next/
+
+# ======================
+# PYTHON
+# ======================
+venv/
+__pycache__/
+*.pyc
+
+# ======================
+# ENV
+# ======================
+.env
+.env.example
+.env.local
+backend/.env
+frontend/.env.local
+
+# ======================
+# CHROMADB
+# ======================
+backend/chroma/chroma_db/
+*.bin
+*.sqlite3
+
+# ======================
+# UPLOADS
+# ======================
+backend/uploads/
+
+# ======================
+# OS
+# ======================
+.DS_Store
+Thumbs.db
+
+frontend/.gitignore
+backend/chroma/__init__.py
+create_placeholders.py
