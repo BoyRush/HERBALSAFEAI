@@ -102,10 +102,15 @@ const VerifikasiAkun = ({ pendingList, onApprove, onReject }) => {
       {/* Main Card */}
       <div className="verifikasi-card">
         <h3 className="card-title">
-          Menunggu verifikasi ({pendingList.length})
+          Menunggu verifikasi ({pendingList?.length || 0})
         </h3>
 
-        {pendingList.length > 0 ? (
+        {!pendingList || pendingList.length === 0 ? (
+          <div className="empty-state">
+            <CheckCircle size={48} color="#c8e6c9" />
+            <p>Tidak ada pendaftaran baru yang menunggu verifikasi.</p>
+          </div>
+        ) : (
           <div className="pending-list">
             {pendingList.map((user) => (
               <div key={user.id} className="pending-item">
@@ -150,11 +155,6 @@ const VerifikasiAkun = ({ pendingList, onApprove, onReject }) => {
                 </div>
               </div>
             ))}
-          </div>
-        ) : (
-          <div className="empty-state">
-            <CheckCircle size={48} color="#c8e6c9" />
-            <p>Tidak ada pendaftaran baru yang menunggu verifikasi.</p>
           </div>
         )}
       </div>

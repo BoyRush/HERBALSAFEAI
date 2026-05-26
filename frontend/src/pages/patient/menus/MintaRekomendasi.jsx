@@ -50,7 +50,7 @@ export default function MintaRekomendasi({
           <button
             className="btn btn-primary"
             onClick={handleGetAIRecommendation}
-            disabled={isRecommending || !keluhan.trim()}
+            disabled={isRecommending || !(keluhan || '').trim()}
           >
             {isRecommending ? (
               <><Sparkles size={18} style={{ marginRight: '0.5rem' }} /> Menganalisis...</>

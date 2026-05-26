@@ -5,7 +5,7 @@ export default function TambahHerbal({ form, setForm, onSave, isSaving, onCancel
     return (
         <div className="tambah-wrapper">
             <div className="tambah-header">
-                <h1 className="tambah-title">{form.id ? 'Edit Data Herbal' : 'Tambah Herbal Baru'}</h1>
+                <h1 className="tambah-title">{form?.id ? 'Edit Data Herbal' : 'Tambah Herbal Baru'}</h1>
                 <p className="tambah-subtitle">Data herbal akan disimpan ke database dan diindeks ke knowledge base AI</p>
             </div>
 
@@ -17,8 +17,8 @@ export default function TambahHerbal({ form, setForm, onSave, isSaving, onCancel
                             type="text"
                             className="form-input"
                             placeholder="Contoh: Jahe, Kunyit, Temulawak..."
-                            value={form.nama || ''}
-                            onChange={(e) => setForm({ ...form, nama: e.target.value })}
+                            value={form?.nama || ''}
+                            onChange={(e) => setForm({ ...(form || {}), nama: e.target.value })}
                             required
                         />
                     </div>
@@ -28,8 +28,8 @@ export default function TambahHerbal({ form, setForm, onSave, isSaving, onCancel
                         <textarea
                             className="form-textarea"
                             placeholder="Contoh: Diabetes, tekanan darah tinggi, anti-inflamasi, peningkat imunitas..."
-                            value={form.indikasi || ''}
-                            onChange={(e) => setForm({ ...form, indikasi: e.target.value })}
+                            value={form?.indikasi || ''}
+                            onChange={(e) => setForm({ ...(form || {}), indikasi: e.target.value })}
                             rows={3}
                             required
                         />
@@ -41,8 +41,8 @@ export default function TambahHerbal({ form, setForm, onSave, isSaving, onCancel
                         <textarea
                             className="form-textarea"
                             placeholder="Contoh: Ibu hamil, anak-anak, penderita gangguan ginjal..."
-                            value={form.kontraindikasi || ''}
-                            onChange={(e) => setForm({ ...form, kontraindikasi: e.target.value })}
+                            value={form?.kontraindikasi || ''}
+                            onChange={(e) => setForm({ ...(form || {}), kontraindikasi: e.target.value })}
                             rows={2}
                             required
                         />
@@ -55,7 +55,7 @@ export default function TambahHerbal({ form, setForm, onSave, isSaving, onCancel
                         </button>
                         <button type="submit" className="btn-save" disabled={isSaving}>
                             <Save size={16} />
-                            {isSaving ? 'Menyimpan...' : (form.id ? 'Simpan Perubahan' : 'Tambah ke Database')}
+                            {isSaving ? 'Menyimpan...' : (form?.id ? 'Simpan Perubahan' : 'Tambah ke Database')}
                         </button>
                     </div>
                 </form>
