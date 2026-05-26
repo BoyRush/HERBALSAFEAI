@@ -34,7 +34,11 @@ from services.herbal_retriever import retrieve_relevant_herbs
 app = Flask(__name__)
 CORS(app,
      resources={r"/*": {
-         "origins": ["http://localhost:3000", "http://127.0.0.1:3000"],
+         "origins": [
+             "http://localhost:3000", 
+             "http://127.0.0.1:3000",
+             "https://herbalsafeai.vercel.app"
+         ],
          "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
          "allow_headers": ["Content-Type", "Authorization"],
          "supports_credentials": True
@@ -47,14 +51,21 @@ app.config["JWT_QUERY_STRING_NAME"] = "token"
 token_manager = JWTManager(app)
 
 def acquire_mysql_connection():
-    return mysql.connector.connect(
-        host=os.environ.get("DB_HOST", "localhost"),
-        user=os.environ.get("DB_USER", "root"),
-        password=os.environ.get("DB_PASSWORD", "root"), 
-        database=os.environ.get("DB_NAME", "herbalsafe_db"),
-        port=int(os.environ.get("DB_PORT", 3306)),
-        collation="utf8mb4_general_ci"
-    )
+    config = {
+        "host": os.environ.get("DB_HOST", "localhost"),
+        "user": os.environ.get("DB_USER", "root"),
+        "password": os.environ.get("DB_PASSWORD", "root"), 
+        "database": os.environ.get("DB_NAME", "herbalsafe_db"),
+        "port": int(os.environ.get("DB_PORT", 3306)),
+        "collation": "utf8mb4_general_ci"
+    }
+    
+    # Dukungan SSL (wajib untuk Aiven/Cloud MySQL)
+    if os.environ.get("DB_SSL_CA"):
+        config["ssl_ca"] = os.environ.get("DB_SSL_CA")
+        config["ssl_verify_cert"] = True
+    
+    return mysql.connector.connect(**config)
 
 def push_system_notification(target_user_id, notif_message):
     try:
